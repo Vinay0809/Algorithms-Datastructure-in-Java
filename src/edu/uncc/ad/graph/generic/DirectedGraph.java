@@ -3,7 +3,7 @@ package edu.uncc.ad.graph.generic;
 import java.util.*;
 
 /**
- * A Graph ADT (This is an undirected, unweighted graph implementation), backed by Hash table and LinkedHashSet.
+ * A Graph ADT (This is an directed unweighted graph implementation), backed by Hash table and LinkedHashSet.
  * Hashtable to store vertices and adjacency list as key, value pair. LinkedHasSet is to store adjacent vertices for
  * every vertex. This representation of graph follows Adjacent-list graph representation. This implementation is not
  * thread safe.
@@ -16,7 +16,7 @@ import java.util.*;
  *
  * Instance Methods -
  *
-     * 1. public void addEdge(E src, E dest) - Adds an edge for set of vertices.This method throw an
+ * 1. public void addEdge(E src, E dest) - Adds an edge for set of vertices.This method throw an
  * IndexOutOfBoundsException if source or destination vertex is not in this graph.
  *
  * 2. public void addVertex(E v) - Adds new vertex to graph.
@@ -31,9 +31,7 @@ import java.util.*;
  * source or destination vertices are not in this graph. Throw UnsupportedOperationException if there is no edge
  * between source, and destination vertices.
  *
- *6. public int edges() - returns count of edges in this graph.
- *
- *7. public Set<E> vertices() - returns set of vertices of this graph.
+ *6. public Set<E> vertices() - returns set of vertices of this graph.
  *
  *
  * @param <E>
@@ -41,8 +39,7 @@ import java.util.*;
  *
  * @author venky
  */
-public class Graph<E> implements AbstractGraph<E> {
-
+public class DirectedGraph<E> implements AbstractGraph<E> {
     /**
      * to store number of vertices in graph.
      */
@@ -57,7 +54,7 @@ public class Graph<E> implements AbstractGraph<E> {
     /**
      * Instantiates a new Graph.
      */
-    public Graph() {
+    public DirectedGraph() {
         // initializing the graph
         graph = new Hashtable<> ();
 
@@ -70,7 +67,7 @@ public class Graph<E> implements AbstractGraph<E> {
      * @param vertices
      *         the list of vertices
      */
-    public Graph(List<E> vertices) {
+    public DirectedGraph(List<E> vertices) {
         this.numberOfVertices = vertices.size ();
         graph = new Hashtable<> (this.numberOfVertices);
         for ( int i = 0 ; i < vertices.size () ; i++ ) {
@@ -101,9 +98,6 @@ public class Graph<E> implements AbstractGraph<E> {
 
         // adding an edge from source to destination by updating the respective adjacency graph.
         edgeAdded = this.graph.get (src).add (dest);
-
-        // since it is an undirected graph, also need to update destination as well.
-        edgeAdded = this.graph.get (dest).add (src);
 
         if ( edgeAdded )
             edges++;
@@ -175,9 +169,8 @@ public class Graph<E> implements AbstractGraph<E> {
     @Override public void removeEdge(E src, E dest){
         if ( !(this.graph.containsKey (src) && this.graph.containsKey (dest))){
             throw new IllegalArgumentException ("Invalid source or destination vertex");
-        } else if ( this.graph.get (src).contains (dest) && this.graph.get (dest).contains (src) ){
+        } else if ( this.graph.get (src).contains (dest) ){
             this.graph.get (src).remove (dest);
-            this.graph.get (dest).remove (src);
         } else {
             throw new UnsupportedOperationException ("No edge exists between vertices");
         }
@@ -217,8 +210,8 @@ public class Graph<E> implements AbstractGraph<E> {
      *
      * @return the int
      */
-     public int edges() {
-     return edges;
+    private int edges() {
+        return edges;
     }
 
     /**
@@ -236,8 +229,9 @@ public class Graph<E> implements AbstractGraph<E> {
      * @return the string representation of (#vertices, #edges)
      */
     @Override public String size(){
-      StringBuilder stringBuilder = new StringBuilder ();
-      stringBuilder.append ("( "+this.graph.size ()+" , "+this.edges+" )");
-      return stringBuilder.toString ();
+        StringBuilder stringBuilder = new StringBuilder ();
+        stringBuilder.append ("( "+this.graph.size ()+" , "+this.edges+" )");
+        return stringBuilder.toString ();
     }
+
 }

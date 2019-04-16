@@ -34,5 +34,6 @@ public class Main {
         System.out.println (graph);
 
         System.out.println (graph.size ());
+        System.out.printf ("Degree of B - "+graph.degree ('X'));
     }
 }
