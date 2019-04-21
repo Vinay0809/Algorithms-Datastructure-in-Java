@@ -1,5 +1,6 @@
 package edu.uncc.ad.graph.generic;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -10,7 +11,7 @@ public interface AbstractGraph<E> {
 
     void addVertex(E v);
 
-    Set<E> getNeighbours(E v);
+    List<E> getNeighbours(E v);
 
     void removeVertex(E v);
 
@@ -20,7 +21,7 @@ public interface AbstractGraph<E> {
 
 //    int edges();
 
-    Set<E> vertices();
+    List<E> vertices();
 
-    String size();
+    List<Integer> size();
 }

@@ -8,7 +8,6 @@ public class SinglyLinkedList<E> {
     private SingleLinkedNode<E> head;// represents the head
     private int size = 0; // variable to keep track of size.
 
-
     public void addToFront(E item) {
         SingleLinkedNode<E> node = new SingleLinkedNode (item); // assigning the student object
         node.setNext (head); // setting the next node to null.

@@ -3,16 +3,16 @@ package edu.uncc.ad.graph.generic;
 import java.util.*;
 
 /**
- * A Graph ADT (This is an directed unweighted graph implementation), backed by Hash table and LinkedHashSet.
+ * A Directed Acyclic Graph ADT (This is an unweighted graph implementation), backed by Hash table and
+ * LinkedHashSet.
  * Hashtable to store vertices and adjacency list as key, value pair. LinkedHasSet is to store adjacent vertices for
  * every vertex. This representation of graph follows Adjacent-list graph representation. This implementation is not
  * thread safe.
  *
- * Hashtable provides better optimization over array/ array list. Hashtable ensures there won't be a null vertex.
- * Since this implementation is for undirected graph, there won't be any parallel edges so LinkedHashSet
- * ensures, there only one undirected edge between any two vertices. It provides constant-time performance for most
- * of it's operations such as add a new vertex into graph, add an edge, get adjacent vertices for a give vertex. This
- * class provides two constructors to create a graph. The class also provides instance methods to operate on this graph.
+ * Hashtable provides better optimization over array / array list. Hashtable ensures there won't be a null vertex. It
+ * provides constant-time performance for most of it's operations such as add a new vertex into graph, add an edge,
+ * get adjacent vertices for a give vertex. This class provides two constructors to create a graph. The class also
+ * provides instance methods to operate on this graph.
  *
  * Instance Methods -
  *
@@ -25,15 +25,23 @@ import java.util.*;
  * exists in this graph.
  *
  * 4. public void removeVertex(E v) - Removes an vertex from this graph. Throw IllegalArgumentException if v doesn't
- * exists in this graph. Throws UnsupportedOperationException if v have an adjacent vertex.
+ * exists in this graph. Throws UnsupportedOperationException if indegree of v is greater than 0.
  *
  * 5. public void removeEdge(E src, E dest) - Removes an edge between two vertices. Throw IllegalArgumentException if
  * source or destination vertices are not in this graph. Throw UnsupportedOperationException if there is no edge
  * between source, and destination vertices.
  *
- *6. public Set<E> vertices() - returns set of vertices of this graph.
+ * 6. public List<E> vertices() - returns list of vertices of this graph.
  *
+ * 7. public int inDegree(E v) - returns in degree of a vertex v.
  *
+ * 8. public int outDegree(E v) - returns out degree of a vertex v.
+ *
+ * 9. public int degree(E v) - degree of vertex v.
+ *
+ * 10. public int edges() - returns number of edges in this graph.
+ *
+ * 11. public List<Integer, Integer> size() - returns size of this graph in the form of [#vertices, #edges]
  * @param <E>
  *         the type parameter
  *
@@ -52,7 +60,7 @@ public class DirectedGraph<E> implements AbstractGraph<E> {
     private Map<E, Set<E>> graph;
 
     /**
-     * Instantiates a new Graph.
+     * Instantiates a new UndirectedGraph.
      */
     public DirectedGraph() {
         // initializing the graph
@@ -61,9 +69,10 @@ public class DirectedGraph<E> implements AbstractGraph<E> {
     }
 
     /**
-     * Instantiates a new Graph.
+     * Instantiates a new UndirectedGraph.
      * User can pass List of vertices to this constructor to create a graph with predefined vertices.
-     *
+     *Initially there won't be any edges between vertices.
+     * Use addEgde method to define edge between vertices.
      * @param vertices
      *         the list of vertices
      */
@@ -132,12 +141,16 @@ public class DirectedGraph<E> implements AbstractGraph<E> {
      *
      * @return the list
      */
-    @Override public Set<E> getNeighbours(E v) {
+    @Override public List<E> getNeighbours(E v) {
         // check if vertex is valid or not
         if ( !this.graph.containsKey (v) ) {
             throw new IllegalArgumentException ("Invalid vertex");
         }
-        return this.graph.get (v);
+
+        List<E> neighbours = new ArrayList<> (this.graph.get (v).size ());
+        neighbours.addAll (this.graph.get (v));
+        return neighbours;
+//        return this.graph.get (v);
     }
 
     /**
@@ -151,8 +164,8 @@ public class DirectedGraph<E> implements AbstractGraph<E> {
     @Override public void removeVertex(E v){
         if ( !this.graph.containsKey (v) ){
             throw new IllegalArgumentException("Vertex doesn't exist in graph");
-        } else if (  this.graph.get (v).size () > 0){
-            throw new UnsupportedOperationException ("Vertex have one or more edges.");
+        } else if (  inDegree (v) > 0){
+            throw new UnsupportedOperationException ("Vertex "+v+" have one or more edges.");
         }
         graph.remove (v);
     }
@@ -187,7 +200,45 @@ public class DirectedGraph<E> implements AbstractGraph<E> {
         if ( !this.graph.containsKey (v)){
             throw new IllegalArgumentException ("Vertex "+v+" is doesn't exists");
         }
-        return this.graph.get (v).size ();
+        int degree = inDegree (v) + outDegree (v);
+        return degree;
+    }
+
+    /**
+     * Returns the In degree of a vertex in this graph.
+     * If vertex is not found in this graph throws IllegalArgumentException.
+     * @param node
+     * @return in-degree
+     */
+    public int inDegree(E node){
+        // check if vertex is defined in graph.
+        if ( !this.graph.containsKey (node)){
+            throw new IllegalArgumentException ("Vertex "+node+" is doesn't exists");
+        }
+        int inDegree = 0;
+       Iterator<E> iterator = this.graph.keySet ().iterator ();
+       while ( iterator.hasNext () ){
+          E key = iterator.next ();
+          Set<E> temp = this.graph.get (key);
+          if ( temp.contains (node) ){
+              inDegree += 1;
+          }
+       }
+        return inDegree;
+    }
+
+    /**
+     * Returns the out degree of a vertex in this graph.
+     * If vertex is not found in this graph throws IllegalArgumentException.
+     * @param node
+     * @return out degree of node.
+     */
+    public int outDegree(E node){
+        // check if vertex is part of this graph
+        if ( !this.graph.containsKey (node)){
+            throw new IllegalArgumentException ("Vertex "+node+" is doesn't exists");
+        }
+        return this.graph.get (node).size ();
     }
     /**
      *
@@ -210,7 +261,7 @@ public class DirectedGraph<E> implements AbstractGraph<E> {
      *
      * @return the int
      */
-    private int edges() {
+    public int edges() {
         return edges;
     }
 
@@ -219,19 +270,22 @@ public class DirectedGraph<E> implements AbstractGraph<E> {
      *
      * @return the set of vertices  in this graph.
      */
-    @Override public Set<E> vertices(){
-        return this.graph.keySet ();
+    @Override public List<E> vertices(){
+        List<E> keyList = new ArrayList<> (this.graph.keySet ().size ());
+        keyList.addAll (this.graph.keySet ());
+        return keyList;
     }
 
     /**
-     * this method return size in form of (#vertices, #edges) as a string.
+     * this method return size in form of [#vertices, #edges] in a list .
      *
-     * @return the string representation of (#vertices, #edges)
+     * @return the List containing [#vertices, #edges]
      */
-    @Override public String size(){
-        StringBuilder stringBuilder = new StringBuilder ();
-        stringBuilder.append ("( "+this.graph.size ()+" , "+this.edges+" )");
-        return stringBuilder.toString ();
+    @Override public List<Integer> size(){
+        List<Integer> size = new ArrayList<> (2);
+        size.add (this.graph.size ());
+        size.add (edges ());
+        return size;
     }
 
 }

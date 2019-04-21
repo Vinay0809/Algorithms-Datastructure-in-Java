@@ -3,20 +3,19 @@ package edu.uncc.ad.graph.generic;
 import java.util.*;
 
 /**
- * A Graph ADT (This is an undirected, unweighted graph implementation), backed by Hash table and LinkedHashSet.
+ * A UndirectedGraph ADT (This is an undirected, unweighted graph implementation), backed by Hash table and LinkedHashSet.
  * Hashtable to store vertices and adjacency list as key, value pair. LinkedHasSet is to store adjacent vertices for
  * every vertex. This representation of graph follows Adjacent-list graph representation. This implementation is not
  * thread safe.
  *
- * Hashtable provides better optimization over array/ array list. Hashtable ensures there won't be a null vertex.
- * Since this implementation is for undirected graph, there won't be any parallel edges so LinkedHashSet
- * ensures, there only one undirected edge between any two vertices. It provides constant-time performance for most
- * of it's operations such as add a new vertex into graph, add an edge, get adjacent vertices for a give vertex. This
- * class provides two constructors to create a graph. The class also provides instance methods to operate on this graph.
+ * Hashtable provides better optimization over array/ array list. Hashtable ensures there won't be a null vertex. It
+ * provides constant-time performance for most of it's operations such as add a new vertex into graph, add an edge,
+ * get adjacent vertices for a give vertex. This class provides two constructors to create a graph. The class also
+ * provides instance methods to operate on this graph.
  *
  * Instance Methods -
  *
-     * 1. public void addEdge(E src, E dest) - Adds an edge for set of vertices.This method throw an
+ * 1. public void addEdge(E src, E dest) - Adds an edge for set of vertices.This method throw an
  * IndexOutOfBoundsException if source or destination vertex is not in this graph.
  *
  * 2. public void addVertex(E v) - Adds new vertex to graph.
@@ -31,9 +30,13 @@ import java.util.*;
  * source or destination vertices are not in this graph. Throw UnsupportedOperationException if there is no edge
  * between source, and destination vertices.
  *
- *6. public int edges() - returns count of edges in this graph.
+ * 6. public int degree(E v) - returns the degree of a vertex v.
  *
- *7. public Set<E> vertices() - returns set of vertices of this graph.
+ * 7. public int edges() - returns count of edges in this graph.
+ *
+ * 8. public List<E> vertices() - returns list of vertices of this graph.
+ *
+ * 9. public List<Integer, Integer> size() - returns size of this graph in the form of [#vertices, #edges]
  *
  *
  * @param <E>
@@ -41,7 +44,7 @@ import java.util.*;
  *
  * @author venky
  */
-public class Graph<E> implements AbstractGraph<E> {
+public class UndirectedGraph<E> implements AbstractGraph<E> {
 
     /**
      * to store number of vertices in graph.
@@ -55,22 +58,22 @@ public class Graph<E> implements AbstractGraph<E> {
     private Map<E, Set<E>> graph;
 
     /**
-     * Instantiates a new Graph.
+     * Instantiates a new UndirectedGraph.
      */
-    public Graph() {
+    public UndirectedGraph() {
         // initializing the graph
         graph = new Hashtable<> ();
 
     }
 
     /**
-     * Instantiates a new Graph.
+     * Instantiates a new UndirectedGraph.
      * User can pass List of vertices to this constructor to create a graph with predefined vertices.
      *
      * @param vertices
      *         the list of vertices
      */
-    public Graph(List<E> vertices) {
+    public UndirectedGraph(List<E> vertices) {
         this.numberOfVertices = vertices.size ();
         graph = new Hashtable<> (this.numberOfVertices);
         for ( int i = 0 ; i < vertices.size () ; i++ ) {
@@ -138,12 +141,14 @@ public class Graph<E> implements AbstractGraph<E> {
      *
      * @return the list
      */
-    @Override public Set<E> getNeighbours(E v) {
+    @Override public List<E> getNeighbours(E v) {
         // check if vertex is valid or not
         if ( !this.graph.containsKey (v) ) {
-            throw new IllegalArgumentException ("Invalid vertex");
+            throw new IllegalArgumentException ("Invalid vertex - "+v);
         }
-        return this.graph.get (v);
+        List<E> neighbours = new ArrayList<> (this.graph.get (v).size ());
+        neighbours.addAll (this.graph.get (v));
+        return neighbours;
     }
 
     /**
@@ -222,22 +227,26 @@ public class Graph<E> implements AbstractGraph<E> {
     }
 
     /**
-     * Vertices set
+     * Vertices list
      *
      * @return the set of vertices  in this graph.
      */
-    @Override public Set<E> vertices(){
-        return this.graph.keySet ();
+    @Override public List<E> vertices(){
+        List<E> keyList = new ArrayList<> (this.graph.keySet ().size ());
+        keyList.addAll (this.graph.keySet ());
+        return keyList;
     }
 
     /**
-     * this method return size in form of (#vertices, #edges) as a string.
+     * this method return size in form of [#vertices, #edges] in a list .
      *
-     * @return the string representation of (#vertices, #edges)
+     * @return the List containing [#vertices, #edges]
      */
-    @Override public String size(){
-      StringBuilder stringBuilder = new StringBuilder ();
-      stringBuilder.append ("( "+this.graph.size ()+" , "+this.edges+" )");
-      return stringBuilder.toString ();
+    @Override public List<Integer> size(){
+        List<Integer> size = new ArrayList<> (2);
+        size.add (this.graph.size ());
+        size.add (edges ());
+        return size;
     }
+
 }

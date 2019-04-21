@@ -3,7 +3,7 @@ package edu.uncc.ad.graph;
 import java.util.*;
 
 /**
- * A Graph ADT, backed by Hash table and Linked list
+ * A UndirectedGraph ADT, backed by Hash table and Linked list
  * This representation of graph follows Adjacent-list graph representation.
  * Hash map provide optimization over array/ array list
  * This class provides two constructors, one for creating with initial capacity.
@@ -28,7 +28,7 @@ public class Graph {
     private Map<Integer, LinkedList<Integer>> graph;
 
     /**
-     * Instantiates a new Graph.
+     * Instantiates a new UndirectedGraph.
      */
     Graph() {
         // initializing the graph
@@ -39,7 +39,7 @@ public class Graph {
     }
 
     /**
-     * Instantiates a new Graph.
+     * Instantiates a new UndirectedGraph.
      *
      * @param initialCapacity
      *         the initial capacity

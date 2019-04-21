@@ -1,6 +1,6 @@
 package edu.uncc.ad.graph;
 
-import edu.uncc.ad.graph.generic.Graph;
+import edu.uncc.ad.graph.generic.UndirectedGraph;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +14,7 @@ public class Main {
         Character[] v = {'A','B','C','D','E','F','G','H'};
         List<Character> vertices =  Arrays.asList (v);
 
-        Graph<Character> graph = new Graph<Character> (vertices);
+        UndirectedGraph<Character> graph = new UndirectedGraph<Character> (vertices);
 
 
 
