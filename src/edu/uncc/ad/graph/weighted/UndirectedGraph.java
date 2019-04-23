@@ -10,7 +10,7 @@ import java.util.*;
  *
  * @author venky
  */
-public class UndirectedGraph<E> {
+public class UndirectedGraph<E> implements WeightedGraph<E> {
     /**
      * to store number of vertices in graph.
      */
@@ -37,7 +37,6 @@ public class UndirectedGraph<E> {
      *
      * @param vertices
      *         the list of vertices
-     *
      */
     public UndirectedGraph(List<E> vertices) {
         this.numberOfVertices = vertices.size ();
@@ -51,12 +50,9 @@ public class UndirectedGraph<E> {
      * Add vertex.
      *
      * @param v
-     *         the v
-     *
-     * runtime O(1) - average case
-     * worst case O(log n)
+     *         the v         runtime O(1) - average case         worst case O(log n)
      */
-    public void addVertex(E v) {
+    @Override public void addVertex(E v) {
         if ( this.graph.containsKey (v) ) {
             throw new IllegalArgumentException ("Vertex exits in this graph");
         }
@@ -72,12 +68,9 @@ public class UndirectedGraph<E> {
      * @param dest
      *         the dest
      * @param w
-     *         the w
-     *
-     *  runtime O(1) - average case
-     *  worst case O(log n)
+     *         the w         runtime O(1) - average case         worst case O(log n)
      */
-    public void addEdge(E src, E dest, double w) {
+    @Override public void addEdge(E src, E dest, double w) {
         boolean edgeAdded = false;
         // check if source and destination are valid
         if ( !this.graph.containsKey (src) ) {
@@ -101,11 +94,9 @@ public class UndirectedGraph<E> {
     /**
      * Edges int.
      *
-     * @return the int
-     *
-     * runtime O(1)
+     * @return the int         runtime O(1)
      */
-    public int edgesCount() {
+    @Override public int edgesCount() {
         return this.edges;
     }
 
@@ -113,10 +104,9 @@ public class UndirectedGraph<E> {
     /**
      * Vertices count int.
      *
-     * @return the int
-     * runtime O(1)
+     * @return the int         runtime O(1)
      */
-    public int verticesCount() {
+    @Override public int verticesCount() {
         return this.numberOfVertices;
     }
 
@@ -127,12 +117,9 @@ public class UndirectedGraph<E> {
      * @param v
      *         vertex
      *
-     * @return degree of v.
-     *
-     * Runtime O(1) - average case
-     * worst case - O(log n)
+     * @return degree of v.         Runtime O(1) - average case         worst case - O(log n)
      */
-    public int degree(E v) {
+    @Override public int degree(E v) {
         // check if vertex is part of this graph
         if ( !this.graph.containsKey (v) ) {
             throw new IllegalArgumentException ("Vertex " + v + " is doesn't exists");
@@ -142,12 +129,13 @@ public class UndirectedGraph<E> {
 
     /**
      * Returns the strength of a node in this graph
-     * @param v vertex
-     * @return strength of v
      *
-     * Runtime - O(e)
+     * @param v
+     *         vertex
+     *
+     * @return strength of v         Runtime - O(e)
      */
-    public double strength(E v) {
+    @Override public double strength(E v) {
         double st = 0;
 
         // check if vertex is defined in graph.
@@ -160,15 +148,14 @@ public class UndirectedGraph<E> {
             Edge<E> e = it.next ();
             st = st + e.getW ();
         }
-         return st;
-}
+        return st;
+    }
 
     /**
      * toString method is overridden to represent graph.
      *
      * @return Adjacency list representation of this graph.
-     *
-     * runtime - O(v)
+     *         runtime - O(v)
      */
     @Override public String toString() {
         StringBuilder stringBuilder = new StringBuilder ();
@@ -182,4 +169,68 @@ public class UndirectedGraph<E> {
     }
 
 
+    /**
+     * Private class represents a weighted edge in this graph
+     * @param <E>
+     */
+    private class Edge<E> {
+        private E dest;
+        private double w;
+
+        /**
+         * Instantiates a new Edge.
+         *
+         * @param dest
+         *         the dest
+         * @param w
+         *         the w
+         */
+        public Edge(E dest, double w) {
+            this.dest = dest;
+            this.w = w;
+        }
+
+        /**
+         * Gets dest.
+         *
+         * @return the dest
+         */
+        public E getDest() {
+            return dest;
+        }
+
+        /**
+         * Sets dest.
+         *
+         * @param dest
+         *         the dest
+         */
+        public void setDest(E dest) {
+            this.dest = dest;
+        }
+
+        /**
+         * Gets w.
+         *
+         * @return the w
+         */
+        public double getW() {
+            return w;
+        }
+
+        /**
+         * Sets w.
+         *
+         * @param w
+         *         the w
+         */
+        public void setW(double w) {
+            this.w = w;
+        }
+
+        @Override public String toString() {
+            return "[" + dest + "|(" + w + ")]";
+        }
+    }
 }
+
