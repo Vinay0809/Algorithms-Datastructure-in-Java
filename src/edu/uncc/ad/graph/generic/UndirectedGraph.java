@@ -189,6 +189,14 @@ public class UndirectedGraph<E> implements AbstractGraph<E> {
     }
 
     /**
+     * Edges int.
+     *
+     * @return the int
+     */
+    public int edges() {
+        return edges;
+    }
+    /**
      * Returns the degree of a vertex.
      * This method throws IllegalArgumentException if vertex is not part of this graph.
      * @param v vertex
@@ -201,6 +209,7 @@ public class UndirectedGraph<E> implements AbstractGraph<E> {
         }
         return this.graph.get (v).size ();
     }
+
     /**
      *
      * toString method is overridden to represent graph.
@@ -215,15 +224,6 @@ public class UndirectedGraph<E> implements AbstractGraph<E> {
             stringBuilder.append ("\n");
         });
         return stringBuilder.toString ();
-    }
-
-    /**
-     * Edges int.
-     *
-     * @return the int
-     */
-     public int edges() {
-     return edges;
     }
 
     /**
