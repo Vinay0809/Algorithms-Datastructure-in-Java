@@ -3,7 +3,35 @@ package edu.uncc.ad.graph.weighted;
 import java.util.*;
 
 /**
- * The type Undirected graph.
+ * A Undirected Weighted Graph ADT, backed by Hash table and LinkedHashSet.
+ * Hashtable to store vertices and adjacency list as key, value pair. LinkedHasSet is to store adjacent vertices for
+ * every vertex. This representation of graph follows Adjacent-list graph representation. This implementation is not
+ * thread safe.
+ *
+ * Hashtable provides better optimization over array/ array list. Hashtable ensures there won't be a null vertex. It
+ * provides constant-time performance for most of it's operations such as add a new vertex into graph, add an edge,
+ * finding degree, and to get adjacent vertices for a given vertex. This class provides two constructors to create a
+ * graph.
+ *
+ * The class also provides instance methods for many graph operation
+ *
+ *  Instance Methods -
+ *
+ *  1. public void addVertex(E v) - Adds new vertex to graph.
+ *
+ *  2. public void addEdge(E src, E dest) - Adds an edge for set of vertices.This method throw an
+ *  IndexOutOfBoundsException if source or destination vertex is not in this graph.
+ *
+ *  3. public int edgesCount() - Returns number of edges in this graph.
+ *
+ *  4. public int verticesCount() - Returns number of vertices in this graph.
+ *
+ *  5. public int degree() - Returns the degree of a vertex v.
+ *
+ *  6. public double strength() - Returns the strength for a vertex v.
+ *
+ *  7. public double clusteringCoefficient() - Returns the Clustering coefficient of a vertex v.
+ *
  *
  * @param <E>
  *         the type parameter
@@ -47,10 +75,12 @@ public class UndirectedGraph<E> implements WeightedGraph<E> {
     }
 
     /**
-     * Add vertex.
+     * Adds new vertex to this graph.
      *
      * @param v
-     *         the v         runtime O(1) - average case         worst case O(log n)
+     *         the v
+     *  runtime O(1) - average case
+     *  worst case O(log n)
      */
     @Override public void addVertex(E v) {
         if ( this.graph.containsKey (v) ) {
@@ -61,14 +91,18 @@ public class UndirectedGraph<E> implements WeightedGraph<E> {
     }
 
     /**
-     * Add edge.
+     * Adds an edge for set of vertices.This method throw an IndexOutOfBoundsException if source or destination
+     * vertex is not in this graph.
      *
      * @param src
-     *         the src
+     *         the src vertex.
      * @param dest
-     *         the dest
+     *         the destination vertex.
      * @param w
-     *         the w         runtime O(1) - average case         worst case O(log n)
+     *         weight of this edge.
+     *
+     *  runtime O(1) - average case
+     *  worst case O(log n)
      */
     @Override public void addEdge(E src, E dest, double w) {
         boolean edgeAdded = false;
@@ -92,9 +126,10 @@ public class UndirectedGraph<E> implements WeightedGraph<E> {
 
 
     /**
-     * Edges int.
+     * Returns number of edges in this graph.
      *
-     * @return the int         runtime O(1)
+     * @return number of edges.
+     * runtime O(1)
      */
     @Override public int edgesCount() {
         return this.edges;
@@ -102,9 +137,11 @@ public class UndirectedGraph<E> implements WeightedGraph<E> {
 
 
     /**
-     * Vertices count int.
+     * Returns number of vertices in this graph.
      *
-     * @return the int         runtime O(1)
+     * @return the int number of vertices.
+     *
+     * runtime O(1)
      */
     @Override public int verticesCount() {
         return this.numberOfVertices;
@@ -117,7 +154,10 @@ public class UndirectedGraph<E> implements WeightedGraph<E> {
      * @param v
      *         vertex
      *
-     * @return degree of v.         Runtime O(1) - average case         worst case - O(log n)
+     * @return degree of v.
+     *
+     * Runtime O(1) - average case
+     * worst case - O(log n)
      */
     @Override public int degree(E v) {
         // check if vertex is part of this graph
@@ -128,12 +168,15 @@ public class UndirectedGraph<E> implements WeightedGraph<E> {
     }
 
     /**
-     * Returns the strength of a node in this graph
+     * Returns the strength of a vertex in this graph, throws IllegalArgumentException if vertex doesn't exists in
+     * this graph.
      *
      * @param v
      *         vertex
      *
-     * @return strength of v         Runtime - O(e)
+     * @return strength of v
+     *
+     * Runtime - O(e)
      */
     @Override public double strength(E v) {
         double st = 0;
@@ -149,6 +192,67 @@ public class UndirectedGraph<E> implements WeightedGraph<E> {
             st = st + e.getW ();
         }
         return st;
+    }
+
+    /**
+     * Clustering coefficient of a vertex v.
+     * Clustering coefficient is defined as CC(v) = 2Nv / Kv (Kv -1)
+     * where
+     * v is a vertex
+     * Kv is Degree of vertex v
+     * Nv is # of links between neighbours of v.
+     *
+     * @param v
+     *         the vertex.
+     *
+     * @return the double clustering coefficient of v.
+     *
+     * Run time
+     * O(num of neighbours(v))^2
+     *
+     *
+     */
+    @Override public double clusteringCoefficient(E v) {
+        // check if vertex is defined in graph.
+        if ( !this.graph.containsKey (v) ) {
+            throw new IllegalArgumentException ("Vertex " + v + " is doesn't exists");
+        }
+
+        int kv = degree (v); // degree of v
+        int nv = 0;
+        double cc = 0.0;
+        // find neighbours of v
+        if ( this.graph.get (v).size () > 1 ){ // find cc only if a node has more than 1 edges.
+
+            Set<Edge<E>> neighboursOfV = this.graph.get (v); // get neighbours of v
+            List<Edge<E>> neighboursNodes = new ArrayList<> (neighboursOfV);
+
+            // loop through each neighbour and find out if neighbours are connected.
+            int j = neighboursNodes.size ()-1;
+            for ( int i=0; i<neighboursNodes.size (); i++ ){
+                Set<Edge<E>> ne = this.graph.get (neighboursNodes.get (i).getDest ());
+                while ( i < j ){
+                    // check if j is neighbour of i
+                    Edge<E> e = neighboursNodes.get (j);
+                    Iterator<Edge<E>> it = ne.iterator ();
+                    while ( it.hasNext () ){
+                        if ( it.next ().getDest () == e.getDest () ){
+                            nv += 1;
+                        }
+                    }
+                    j--;
+                }
+            }
+        } else {
+            nv = 0;
+        }
+
+        if (nv > 0){
+            double dnominator = kv * (kv - 1);
+            cc =  ( 2*nv ) / dnominator;
+        }
+
+        return cc;
     }
 
     /**
@@ -171,6 +275,7 @@ public class UndirectedGraph<E> implements WeightedGraph<E> {
 
     /**
      * Private class represents a weighted edge in this graph
+     *
      * @param <E>
      */
     private class Edge<E> {

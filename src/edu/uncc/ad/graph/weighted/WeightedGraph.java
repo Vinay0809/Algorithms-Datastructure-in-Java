@@ -16,5 +16,6 @@ public interface WeightedGraph<E> {
 
     double strength(E v);
 
+    double clusteringCoefficient(E v);
     @Override String toString();
 }

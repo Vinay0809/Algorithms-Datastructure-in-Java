@@ -32,6 +32,9 @@ public class Demo {
         System.out.println ("Vertices"+graph.verticesCount ());
         System.out.println ("Edges"+graph.edgesCount ());
 
+
+      System.out.println (graph.clusteringCoefficient (1));
+
         for ( int i=1; i<=6;i++ ){
             System.out.print (graph.degree (i)+" ");
         }
