@@ -33,7 +33,7 @@ public class Demo {
         System.out.println ("Edges"+graph.edgesCount ());
 
 
-      System.out.println (graph.clusteringCoefficient (1));
+
 
         for ( int i=1; i<=6;i++ ){
             System.out.print (graph.degree (i)+" ");
@@ -44,5 +44,16 @@ public class Demo {
         for ( int i=1; i<=6;i++ ){
             System.out.print (graph.strength (i)+" ");
         }
+        System.out.println ();
+        for ( int i=1; i<=6;i++ ){
+            System.out.print (graph.clusteringCoefficient (i)+" ");
+        }
+        System.out.println ();
+
+        for ( int i=1; i<=6;i++ ){
+            System.out.print (graph.cCoefficient (i)+" ");
+        }
+        System.out.println ();
+//        graph.check (1);
     }
 }

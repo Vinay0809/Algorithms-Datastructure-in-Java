@@ -51,9 +51,9 @@ public class Cqueue<E> {
      *         the element to be added.
      */
     public void add(E e) {
-        // check if queue is full, is so resize queue by double i.e when size (number of elements in this queue) of
+        // check if queue is full, if so resize queue by double i.e when size (number of elements in this queue) of
         // queue equals
-        if ( size () == queue.length - 1 ) {
+        if ( size () == queue.length) {
             int size = size (); //this will be used to set new back
             E[] temp = ( E[] ) new Object[2 * queue.length];
 
